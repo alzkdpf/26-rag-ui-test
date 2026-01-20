@@ -11,8 +11,7 @@ export const COLLECTIONS = {
     EXAMPLES: 'sdui_examples',
 } as const;
 
-export const VECTOR_SIZE = 768; // Gemini embedding-001 dimension
-// Alternative: 1536 for OpenAI text-embedding-3-small
+export const VECTOR_SIZE = 768; // nomic-embed-text dimension (Ollama local)
 
 /**
  * Component Catalog Collection

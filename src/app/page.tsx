@@ -91,7 +91,7 @@ export default function HomePage() {
               disabled={loading || !prompt.trim()}
               className="w-full mt-4 h-12 text-base font-medium"
             >
-              {loading ? '⚙️ Generating with Gemini...' : '✨ Generate UI with RAG'}
+              {loading ? '⚙️ Generating with RAG...' : '✨ Generate UI from RAG'}
             </Button>
 
             {error && (

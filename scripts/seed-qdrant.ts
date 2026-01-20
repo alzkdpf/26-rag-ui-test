@@ -6,6 +6,10 @@
  * - Interaction Examples (card click → modal open)
  */
 
+// Load environment variables from .env.local
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
 import { qdrantClient, initializeCollections, generateEmbedding } from '../src/lib/qdrant/client';
 import { COLLECTIONS } from '../src/lib/qdrant/schema';
 import type { ComponentSpec, CapabilityManifest, InteractionExample } from '../src/types/sdui';
@@ -205,7 +209,8 @@ async function seedData() {
 
         // Seed Component Specs
         console.log('📦 Seeding component specs...');
-        for (const spec of componentSpecs) {
+        for (let i = 0; i < componentSpecs.length; i++) {
+            const spec = componentSpecs[i];
             const { embedding_text, ...payload } = spec;
             const vector = await generateEmbedding(embedding_text);
 
@@ -213,7 +218,7 @@ async function seedData() {
                 wait: true,
                 points: [
                     {
-                        id: `comp.${spec.key.toLowerCase()}.v1`,
+                        id: i + 1, // Use integer ID
                         vector,
                         payload,
                     },
@@ -224,7 +229,8 @@ async function seedData() {
 
         // Seed Capability Manifests
         console.log('\n🎯 Seeding capability manifests...');
-        for (const cap of capabilityManifests) {
+        for (let i = 0; i < capabilityManifests.length; i++) {
+            const cap = capabilityManifests[i];
             const { embedding_text, ...payload } = cap;
             const vector = await generateEmbedding(embedding_text);
 
@@ -232,7 +238,7 @@ async function seedData() {
                 wait: true,
                 points: [
                     {
-                        id: `cap.${cap.key}.${cap.version}`,
+                        id: i + 1, // Use integer ID
                         vector,
                         payload,
                     },
@@ -252,7 +258,7 @@ async function seedData() {
                 wait: true,
                 points: [
                     {
-                        id: `ex.${example.intent}.v${i + 1}`,
+                        id: i + 1, // Use integer ID
                         vector,
                         payload,
                     },

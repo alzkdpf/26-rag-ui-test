@@ -21,16 +21,36 @@ export const qdrantClient = new QdrantClient({
     apiKey: qdrantApiKey,
 });
 
-// Initialize Gemini for embeddings
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+// Initialize Gemini for embeddings (Comment kept, but Gemini is no longer used for embeddings)
+// const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || ''); // Removed as Gemini is no longer used
 
 /**
- * Generate embedding vector using Gemini
+ * Generate embedding vector using Ollama (local, no API key needed)
+ * Using nomic-embed-text model (768 dimensions)
  */
 export async function generateEmbedding(text: string): Promise<number[]> {
-    const model = genAI.getGenerativeModel({ model: 'text-embedding-004' });
-    const result = await model.embedContent(text);
-    return result.embedding.values;
+    const ollamaUrl = process.env.OLLAMA_URL || 'http://localhost:11434';
+
+    try {
+        const response = await fetch(`${ollamaUrl}/api/embeddings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'nomic-embed-text',
+                prompt: text,
+            }),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Ollama API error: ${response.status} ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.embedding;
+    } catch (error: any) {
+        console.error(`Failed to generate embedding: ${error.message}`);
+        throw error;
+    }
 }
 
 /**
